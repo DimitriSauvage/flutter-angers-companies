@@ -1,5 +1,5 @@
 import 'package:flutter/widgets.dart';
-import 'package:hello_world/screens/add_company.dart';
+import 'package:hello_world/screens/edit_company.dart';
 import 'package:hello_world/screens/search_adress.dart';
 
 class Routes {
@@ -8,7 +8,7 @@ class Routes {
 
   /// Get routes
   static Map<String, WidgetBuilder> getRoutes() => {
-        addCompany: _getWidgetForRoute(AddCompany()),
+        addCompany: _getWidgetForRoute(EditCompany()),
         searchAdress: _getWidgetForRoute(SearchAdress())
       };
 

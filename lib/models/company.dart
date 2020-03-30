@@ -1,18 +1,20 @@
 import 'package:flutter/widgets.dart';
 import 'package:uuid/uuid.dart';
 
-import 'adress.dart';
+import 'address.dart';
 
 class Company {
   ///Name
   String name;
 
   ///Id
-  Uuid id = Uuid();
+  Uuid id;
 
   ///Adress
-  Adress adress;
+  Address address;
 
   //Constructor
-  Company({this.id, @required this.name, this.adress});
+  Company({this.id, @required this.name, this.address}) {
+    this.id = Uuid();
+  }
 }

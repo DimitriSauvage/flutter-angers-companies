@@ -38,7 +38,7 @@ class _CompanyListState extends State<CompanyList> {
               ), //Right arrow icon to the left
               // subtitle: Text(
               //     "${company?.street != null ? company.street + ',' : ''} ${company?.zipCode ?? ''} ${company?.city ?? ''}"),
-              title: Text(company.name),
+              title: Text(company?.name),
               onTap: () async {
                 Company editedCompany = await Navigator.of(context).pushNamed(
                     Routes.addCompany,

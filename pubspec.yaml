@@ -14,9 +14,11 @@ description: A new Flutter project.
 version: 1.0.0+1
 
 environment:
-  sdk: ">=2.1.0 <3.0.0"
+  sdk: ">=2.2.2 <3.0.0"
 
 dependencies:
+  geojson: 0.9.1 
+  dio: 3.0.9
   uuid: 2.0.4
   latlong: ^0.6.1
   flutter:
