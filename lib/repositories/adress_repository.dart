@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:dio/dio.dart';
 import 'package:geojson/geojson.dart';
-import 'package:hello_world/Helpers/geojson_helper.dart';
 import 'package:hello_world/models/address.dart';
 
 class AdressRepository {
@@ -25,7 +24,7 @@ class AdressRepository {
     //Transform
     List<Address> addresses = List<Address>();
     featureCollection.collection.forEach((feature) {
-      addresses.add(GeoJsonHelper.featureToAddress(feature));
+      addresses.add(Address.fromGeoJsonFeature(feature));
     });
     return addresses;
   }

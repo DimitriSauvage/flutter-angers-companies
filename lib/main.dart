@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:hello_world/screens/company_list.dart';
+import 'package:hello_world/screens/home.dart';
 
 import 'routes.dart';
 
@@ -16,7 +16,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.limeAccent[50],
       ),
-      home: CompanyList(),
+      home: Home(),
     );
   }
 }

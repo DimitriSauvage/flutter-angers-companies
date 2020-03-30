@@ -14,7 +14,7 @@ class Company {
   Address address;
 
   //Constructor
-  Company({this.id, @required this.name, this.address}) {
+  Company({this.id, @required this.name, @required this.address}) {
     this.id = Uuid();
   }
 }

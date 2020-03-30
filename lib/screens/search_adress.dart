@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:hello_world/models/address.dart';
 import 'package:hello_world/repositories/adress_repository.dart';
-import 'package:latlong/latlong.dart';
 
 class SearchAdress extends StatefulWidget {
   @override
@@ -17,6 +16,10 @@ class _SearchAdressState extends State<SearchAdress> {
   AdressRepository _repository = new AdressRepository();
   //Adresses
   List<Address> _addresses = [];
+  //Min research length
+  int _minLength = 3;
+  //Debounce time before searching
+  Duration _debounceDuration = Duration(milliseconds: 500);
 
   @override
   Widget build(BuildContext context) {
@@ -40,8 +43,8 @@ class _SearchAdressState extends State<SearchAdress> {
                   this._debounce.cancel();
                 }
                 this._debounce =
-                    Timer(const Duration(milliseconds: 400), () async {
-                  if (value.trim().isNotEmpty) {
+                    Timer(this._debounceDuration, () async {
+                  if (value != null && value.trim().length > this._minLength) {
                     List<Address> result = await this._repository.search(value);
                     this.setState(() {
                       this._addresses = result;

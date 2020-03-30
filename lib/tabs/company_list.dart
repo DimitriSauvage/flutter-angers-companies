@@ -3,18 +3,20 @@ import 'package:hello_world/models/company.dart';
 
 import '../routes.dart';
 
-class CompanyList extends StatefulWidget {
-  @override
-  _CompanyListState createState() => _CompanyListState();
-}
+typedef void OnSave(Company company);
+typedef void OnRemove(Company company);
 
-class _CompanyListState extends State<CompanyList> {
-  List<Company> _companies = [
-    Company(name: "Delivagri"),
-    Company(name: "CNP"),
-    Company(name: "ESPL"),
-    Company(name: "Orkeis")
-  ];
+class CompanyList extends StatelessWidget {
+  //Fields
+  List<Company> companies;
+  OnSave onSave;
+  OnRemove onRemove;
+
+  //Constructor
+  CompanyList(
+      {@required this.companies,
+      @required this.onSave,
+      @required this.onRemove});
 
   @override
   Widget build(BuildContext context) {
@@ -24,10 +26,10 @@ class _CompanyListState extends State<CompanyList> {
       ),
       body: Container(
         child: ListView.separated(
-          itemCount: this._companies.length,
+          itemCount: this.companies.length,
           itemBuilder: (context, index) {
             //Get current company
-            Company company = this._companies[index];
+            Company company = this.companies[index];
 
             //List element
             return ListTile(
@@ -41,15 +43,12 @@ class _CompanyListState extends State<CompanyList> {
               title: Text(company?.name),
               onTap: () async {
                 Company editedCompany = await Navigator.of(context).pushNamed(
-                    Routes.addCompany,
+                    Routes.editCompany,
                     arguments: {"company": company}) as Company;
-                if (editedCompany != null)
-                  this._companies[index] = editedCompany;
+                if (editedCompany != null) this.onSave(editedCompany);
               },
               onLongPress: () {
-                this.setState(() {
-                  this._companies.remove(company);
-                });
+                this.onRemove(company);
               },
             );
           },
@@ -61,9 +60,9 @@ class _CompanyListState extends State<CompanyList> {
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
           Company company = await Navigator.of(context)
-              .pushNamed(Routes.addCompany) as Company;
+              .pushNamed(Routes.editCompany) as Company;
           if (company != null) {
-            this.setState(() => this._companies.add(company));
+            this.onSave(company);
           }
         },
         child: Icon(Icons.add),
