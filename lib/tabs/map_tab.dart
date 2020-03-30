@@ -6,6 +6,13 @@ import 'package:hello_world/models/company.dart';
 import 'package:latlong/latlong.dart';
 import 'package:map_controller/map_controller.dart';
 
+const String BIKE_TILE =
+    "https://dev.{s}.tile.openstreetmap.fr/cyclosm/{z}/{x}/{y}.png";
+const String NORMAL_TILE =
+    "https://{s}.tile.openstreetmap.fr/osmfr/{z}/{x}/{y}.png";
+
+enum TileMode { Bike, Normal }
+
 class MapTab extends StatefulWidget {
   MapTab({@required this.companies});
 
@@ -22,6 +29,11 @@ class _MapTabState extends State<MapTab> {
   StatefulMapController _statefulMapController;
   //Map changes subscription
   StreamSubscription<StatefulMapControllerStateChange> _subscription;
+  //Icon to display
+  IconData _switchTileIcon = Icons.directions_bike;
+  //Url to use for the tile
+  String _customTile = NORMAL_TILE;
+  TileMode _tileMode = TileMode.Normal;
 
   ///Initialize the state
   @override
@@ -83,6 +95,26 @@ class _MapTabState extends State<MapTab> {
     this._statefulMapController.zoomOut();
   }
 
+  ///Change the tile
+  void _switchTile() {
+    this.setState(() {
+      if (this._tileMode == TileMode.Normal) {
+        //Switch to bike
+        this.setState(() {
+          this._tileMode = TileMode.Bike;
+          this._customTile = BIKE_TILE;
+          this._switchTileIcon = Icons.map;
+        });
+      } else {
+        this.setState(() {
+          this._tileMode = TileMode.Normal;
+          this._customTile = NORMAL_TILE;
+          this._switchTileIcon = Icons.directions_bike;
+        });
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -95,12 +127,23 @@ class _MapTabState extends State<MapTab> {
                 MapOptions(zoom: 12.0, center: LatLng(47.4739884, -0.5515588)),
             layers: [
               TileLayerOptions(
-                  urlTemplate:
-                      "https://{s}.tile.openstreetmap.fr/osmfr/{z}/{x}/{y}.png",
+                  urlTemplate: this._customTile,
                   subdomains: ['a', 'b', 'c'],
                   keepBuffer: 0),
               MarkerLayerOptions(markers: this._getMakersFromCompanies())
             ],
+          ),
+          SafeArea(
+            child: Align(
+              alignment: Alignment.topRight,
+              child: Container(
+                margin: EdgeInsets.symmetric(horizontal: 10),
+                child: FlatButton(
+                    color: Colors.white,
+                    child: Icon(this._switchTileIcon),
+                    onPressed: this._switchTile),
+              ),
+            ),
           ),
           Align(
             alignment: Alignment.bottomCenter,
