@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:core';
 import 'package:geojson/geojson.dart';
 import 'package:latlong/latlong.dart';
@@ -31,6 +32,26 @@ class Address {
             feature.geometry.geoPoint.longitude));
   }
 
+  //Get an address from a json
+  factory Address.fromJson(String jsonString) {
+    Map<String, dynamic> json = jsonDecode(jsonString);
+    return Address(
+        number: json["number"],
+        street: json["street"],
+        zipCode: json["zipCode"],
+        city: json["city"],
+        coordinate: LatLng(json["latitude"] as double, json["longitude"] as double));
+  }
+
+  //Tranform object to json
+  String toJson() => jsonEncode({
+        "number": this.number,
+        "street": this.street,
+        "zipCode": this.zipCode,
+        "city": this.city,
+        "latitude": this.coordinate?.latitude,
+        "longitude": this.coordinate?.longitude
+      });
   //#region Methods
 
   /// Get the full address
@@ -42,8 +63,6 @@ class Address {
         result += valueToAdd;
       }
     }
-
-    ;
 
     addToAddress(this.number);
     addToAddress(this.street);

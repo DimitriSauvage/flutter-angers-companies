@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/widgets.dart';
 import 'package:uuid/uuid.dart';
 
@@ -8,13 +10,25 @@ class Company {
   String name;
 
   ///Id
-  Uuid id;
+  String id;
 
   ///Adress
   Address address;
 
   //Constructor
   Company({this.id, @required this.name, @required this.address}) {
-    this.id = Uuid();
+    this.id = Uuid().toString();
   }
+
+  factory Company.fromJson(String jsonString) {
+    Map<String, dynamic> json = jsonDecode(jsonString);
+    return Company(
+        name: json["name"],
+        id: json["id"],
+        address: Address.fromJson(json["address"]));
+  }
+
+  //Tranform object to json
+  String toJson() => jsonEncode(
+      {"name": this.name, "id": this.id, "address": this.address.toJson()});
 }
