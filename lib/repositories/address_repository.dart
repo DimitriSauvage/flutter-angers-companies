@@ -4,7 +4,7 @@ import 'package:dio/dio.dart';
 import 'package:geojson/geojson.dart';
 import 'package:hello_world/models/address.dart';
 
-class AdressRepository {
+class AddressRepository {
   // Api base adress
   static String apiBaseAdress = "https://api-adresse.data.gouv.fr/search";
 

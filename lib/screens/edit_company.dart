@@ -10,47 +10,29 @@ class EditCompany extends StatelessWidget {
   final TextEditingController _nameEditingController = TextEditingController();
   final TextEditingController _addressEditingController =
       TextEditingController();
-  Company _company;
+  Company _company = Company(name: '', address: Address());
   final GlobalKey<FormState> _formValidationKey = GlobalKey<FormState>();
   //Screen title
-  String _title;
-
-  ///Reset the current company
-  void _resetCompany() {
-    this._company = Company(name: '');
-    this._nameEditingController.text = "";
-    this._addressEditingController.text = "";
-    this._title = "Ajouter une entreprise";
-  }
+  String _title = "Ajouter une entreprise";
 
   @override
   Widget build(BuildContext context) {
-    //Get the company to edit
+    Company company;
+    //Get edited company
     final Map<String, dynamic> args = ModalRoute.of(context).settings.arguments;
-    if (args == null) {
-      //Add a new company
-      this._resetCompany();
-    } else {
-      //Edit company
-      Company editedCompany = args['company'] as Company;
+    if (args != null && args.containsKey("company")) {
+      Company tempCompany = args["company"] as Company;
 
-      if (editedCompany != null) {
-        //If it is a new company
-        if (this._company == null || (this._company.id != editedCompany.id)) {
-          this._company = editedCompany;
-          this._nameEditingController.text = this._company.name;
-          this._addressEditingController.text = this._company.address != null
-              ? this._company.address.fullAddress
-              : "";
+      //Copy of the company to have an immutable state
+      this._company = Company.fromJson(tempCompany.toJson());
 
-          this._title = "Édition de " + this._company.name;
-        }
-      } else {
-        this._resetCompany();
-      }
-      //Check if it is a new company
-
+      //Change values to display company informations
+      this._title = "Edition de " + this._company.name;
+      this._nameEditingController.text = this._company?.name ?? '';
+      this._addressEditingController.text =
+          this._company.address?.fullAddress ?? '';
     }
+
     return Scaffold(
       appBar: AppBar(
         title: Text(this._title),
@@ -73,6 +55,7 @@ class EditCompany extends StatelessWidget {
                     ? "Merci de renseigner le nom de l'entreprise"
                     : null,
                 autofocus: true,
+                onChanged: (value) => this._company.name = value,
                 decoration: InputDecoration(
                     labelText: "Nom de l'entreprise*",
                     icon: Icon(Icons.business)),

@@ -2,9 +2,11 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
-import 'package:hello_world/models/company.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:hello_world/stores/company_store.dart';
 import 'package:latlong/latlong.dart';
 import 'package:map_controller/map_controller.dart';
+import 'package:provider/provider.dart';
 
 const String BIKE_TILE =
     "https://dev.{s}.tile.openstreetmap.fr/cyclosm/{z}/{x}/{y}.png";
@@ -14,10 +16,6 @@ const String NORMAL_TILE =
 enum TileMode { Bike, Normal }
 
 class MapTab extends StatefulWidget {
-  MapTab({@required this.companies});
-
-  List<Company> companies;
-
   @override
   _MapTabState createState() => _MapTabState();
 }
@@ -34,6 +32,13 @@ class _MapTabState extends State<MapTab> {
   //Url to use for the tile
   String _customTile = NORMAL_TILE;
   TileMode _tileMode = TileMode.Normal;
+  CompanyStore _companyStore;
+
+  @override
+  void didChangeDependencies() {
+    this._companyStore = Provider.of<CompanyStore>(context);
+    super.didChangeDependencies();
+  }
 
   ///Initialize the state
   @override
@@ -67,8 +72,8 @@ class _MapTabState extends State<MapTab> {
   ///Get the markers to display
   List<Marker> _getMakersFromCompanies() {
     List<Marker> markers = List<Marker>();
-    if (this.widget.companies != null) {
-      this.widget.companies.forEach((company) {
+    if (this._companyStore.companies != null) {
+      this._companyStore.companies.forEach((company) {
         if (company?.address?.coordinate != null) {
           Marker marker = Marker(
             width: 70,
@@ -121,17 +126,21 @@ class _MapTabState extends State<MapTab> {
       body: Container(
           child: Stack(
         children: <Widget>[
-          FlutterMap(
-            mapController: this._mapController,
-            options:
-                MapOptions(zoom: 12.0, center: LatLng(47.4739884, -0.5515588)),
-            layers: [
-              TileLayerOptions(
-                  urlTemplate: this._customTile,
-                  subdomains: ['a', 'b', 'c'],
-                  keepBuffer: 0),
-              MarkerLayerOptions(markers: this._getMakersFromCompanies())
-            ],
+          Observer(
+            builder: (context) {
+              return FlutterMap(
+                mapController: this._mapController,
+                options: MapOptions(
+                    zoom: 12.0, center: LatLng(47.4739884, -0.5515588)),
+                layers: [
+                  TileLayerOptions(
+                      urlTemplate: this._customTile,
+                      subdomains: ['a', 'b', 'c'],
+                      keepBuffer: 0),
+                  MarkerLayerOptions(markers: this._getMakersFromCompanies())
+                ],
+              );
+            },
           ),
           SafeArea(
             child: Align(

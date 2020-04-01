@@ -2,18 +2,18 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:hello_world/models/address.dart';
-import 'package:hello_world/repositories/adress_repository.dart';
+import 'package:hello_world/repositories/address_repository.dart';
 
-class SearchAdress extends StatefulWidget {
+class SearchAddress extends StatefulWidget {
   @override
-  _SearchAdressState createState() => _SearchAdressState();
+  _SearchAddressState createState() => _SearchAddressState();
 }
 
-class _SearchAdressState extends State<SearchAdress> {
+class _SearchAddressState extends State<SearchAddress> {
   //Timer to wait for the user to stop taping
   Timer _debounce;
   //Repos
-  AdressRepository _repository = new AdressRepository();
+  AddressRepository _addressRepository = new AddressRepository();
   //Adresses
   List<Address> _addresses = [];
   //Min research length
@@ -42,10 +42,10 @@ class _SearchAdressState extends State<SearchAdress> {
                 if (this._debounce?.isActive ?? false) {
                   this._debounce.cancel();
                 }
-                this._debounce =
-                    Timer(this._debounceDuration, () async {
+                this._debounce = Timer(this._debounceDuration, () async {
                   if (value != null && value.trim().length > this._minLength) {
-                    List<Address> result = await this._repository.search(value);
+                    List<Address> result =
+                        await this._addressRepository.search(value);
                     this.setState(() {
                       this._addresses = result;
                     });

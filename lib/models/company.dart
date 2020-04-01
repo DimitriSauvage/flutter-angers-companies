@@ -17,7 +17,7 @@ class Company {
 
   //Constructor
   Company({this.id, @required this.name, @required this.address}) {
-    this.id = Uuid().toString();
+    if (this.id == null) this.id = Uuid().v4();
   }
 
   factory Company.fromJson(String jsonString) {

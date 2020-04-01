@@ -24,6 +24,9 @@ dependencies:
   flutter_map: 0.8.2
   map_controller: 0.7.1
   shared_preferences: 0.5.6+3
+  mobx: 1.1.1
+  provider: 4.0.4
+  flutter_mobx: 1.1.0
   flutter:
     sdk: flutter
 
@@ -32,6 +35,8 @@ dependencies:
   cupertino_icons: ^0.1.2
 
 dev_dependencies:
+  mobx_codegen: 1.0.3
+  build_runner: 1.8.1
   flutter_test:
     sdk: flutter
 
