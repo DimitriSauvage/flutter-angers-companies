@@ -17,20 +17,20 @@ class EditCompany extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Company company;
     //Get edited company
     final Map<String, dynamic> args = ModalRoute.of(context).settings.arguments;
     if (args != null && args.containsKey("company")) {
       Company tempCompany = args["company"] as Company;
+      if (this._company.id != tempCompany.id) {
+        //Copy of the company to have an immutable state
+        this._company = Company.fromJson(tempCompany.toJson());
 
-      //Copy of the company to have an immutable state
-      this._company = Company.fromJson(tempCompany.toJson());
-
-      //Change values to display company informations
-      this._title = "Edition de " + this._company.name;
-      this._nameEditingController.text = this._company?.name ?? '';
-      this._addressEditingController.text =
-          this._company.address?.fullAddress ?? '';
+        //Change values to display company informations
+        this._title = "Edition de " + this._company.name;
+        this._nameEditingController.text = this._company?.name ?? '';
+        this._addressEditingController.text =
+            this._company.address?.fullAddress ?? '';
+      }
     }
 
     return Scaffold(

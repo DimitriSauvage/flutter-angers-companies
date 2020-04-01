@@ -22,6 +22,14 @@ class _CompanyListState extends State<CompanyList> {
     super.didChangeDependencies();
   }
 
+  ///Edit a company
+  Future<void> editCompany(Company company) async {
+    Company editedCompany = await Navigator.of(context)
+            .pushNamed(Routes.editCompany, arguments: {"company": company})
+        as Company;
+    if (editedCompany != null) this._companyStore.save(editedCompany);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -36,30 +44,61 @@ class _CompanyListState extends State<CompanyList> {
               //Get current company
               Company company = this._companyStore.companies[index];
 
-              //List element
-              return ListTile(
-                leading: Icon(Icons.business), //Building icon to the left
-                trailing: Icon(
-                  Icons.keyboard_arrow_right,
-                  size: 35,
-                ), //Right arrow icon to the left
-                // subtitle: Text(
-                //     "${company?.street != null ? company.street + ',' : ''} ${company?.zipCode ?? ''} ${company?.city ?? ''}"),
-                title: Text(company?.name),
-                onTap: () async {
-                  Company editedCompany = await Navigator.of(context).pushNamed(
-                      Routes.editCompany,
-                      arguments: {"company": company}) as Company;
-                  if (editedCompany != null) this._companyStore.save(editedCompany);
+              return Dismissible(
+                background: Container(
+                  alignment: Alignment.centerLeft,
+                  padding: EdgeInsets.only(left: 20.0),
+                  color: Colors.orangeAccent,
+                  child: Icon(Icons.edit, color: Colors.white),
+                ),
+                secondaryBackground: Container(
+                  alignment: Alignment.centerRight,
+                  padding: EdgeInsets.only(right: 20.0),
+                  color: Colors.redAccent,
+                  child: Icon(Icons.delete, color: Colors.white),
+                ),
+                key: Key(company.id),
+                confirmDismiss: (direction) async {
+                  bool dismiss = false;
+                  if (direction == DismissDirection.startToEnd) {
+                    //Edition
+                    this.editCompany(company);
+                  } else {
+                    //Remove
+                    await this._companyStore.remove(company);
+                    dismiss = true;
+                    // Show a snackbar. This snackbar could also contain "Undo" actions.
+                    Scaffold.of(context).showSnackBar(
+                        SnackBar(content: Text("${company.name} supprimé")));
+                  }
+                  return dismiss;
                 },
-                onLongPress: () {
-                  this._companyStore.remove(company);
-                },
+                child: Container(
+                  padding: EdgeInsets.symmetric(vertical: 5),
+                  child: ListTile(
+                      leading: Icon(Icons.business), //Building icon to the left
+                      trailing: Icon(
+                        Icons.keyboard_arrow_right,
+                        size: 35,
+                      ), //Right arrow icon to the left
+                      title: Text(company?.name),
+                      onTap: () async {
+                        this.editCompany(company);
+                      }),
+                ),
               );
             },
-            separatorBuilder: (BuildContext context, int index) => Divider(
-              color: Colors.black26,
-            ),
+            separatorBuilder: (BuildContext context, int index) {
+              Widget result = Container();
+              if (index >= 0) {
+                result = Container(
+                    decoration: BoxDecoration(
+                        border: Border(
+                  top: BorderSide(color: Colors.grey, width: 0.3),
+                )));
+              }
+              return result;
+            },
           ),
         ),
       ),

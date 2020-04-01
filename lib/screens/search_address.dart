@@ -19,7 +19,7 @@ class _SearchAddressState extends State<SearchAddress> {
   //Min research length
   int _minLength = 3;
   //Debounce time before searching
-  Duration _debounceDuration = Duration(milliseconds: 500);
+  Duration _debounceDuration = Duration(milliseconds: 400);
 
   @override
   Widget build(BuildContext context) {
